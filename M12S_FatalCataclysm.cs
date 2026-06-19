@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace KarlinScriptNamespace;
 
-[ScriptType(name: "M12S 致命灾变绘图", territorys: [1327], guid: "1e7c0b5f-7b27-4de6-9a3b-6c0d9d8d1c45", version: "0.0.0.1", author: "Codex")]
+[ScriptType(name: "M12S 致命灾变绘图", territorys: [1327], guid: "1e7c0b5f-7b27-4de6-9a3b-6c0d9d8d1c45", version: "0.0.0.2", author: "Codex")]
 public class M12SFatalCataclysm
 {
     private static readonly Vector3 BossCenter = new(100f, 0f, 85f);
@@ -189,14 +189,19 @@ public class M12SFatalCataclysm
             .Where(o => o.Side == side)
             .GroupBy(o => o.Round)
             .OrderBy(g => g.Key)
-            .SelectMany(g =>
-            {
-                var list = g.ToList();
-                return list.Count <= 1
-                    ? list
-                    : list.OrderByDescending(o => MathF.Abs(o.Position.X - BossCenter.X));
-            })
+            .SelectMany(OrderRoundOrbs)
             .ToList();
+    }
+
+    private static IEnumerable<FatalOrb> OrderRoundOrbs(IGrouping<int, FatalOrb> group)
+    {
+        var list = group.ToList();
+        if (list.Count <= 1)
+        {
+            return list;
+        }
+
+        return list.OrderByDescending(o => MathF.Abs(o.Position.X - BossCenter.X));
     }
 
     private static Vector3 GetSpot(FatalSide side, int index)
