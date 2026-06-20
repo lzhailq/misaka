@@ -10,26 +10,28 @@ using Newtonsoft.Json;
 
 namespace KarlinScriptNamespace;
 
-[ScriptType(name: "M12S 致命灾变绘图", territorys: [1327], guid: "1e7c0b5f-7b27-4de6-9a3b-6c0d9d8d1c45", version: "0.0.0.2", author: "Codex")]
+[ScriptType(name: "M12S 致命灾变绘图", territorys: [1327], guid: "1e7c0b5f-7b27-4de6-9a3b-6c0d9d8d1c45", version: "0.0.0.3", author: "Codex")]
 public class M12SFatalCataclysm
 {
     private static readonly Vector3 BossCenter = new(100f, 0f, 85f);
+    private static readonly Vector4 PersonalArrowColor = new(0.1f, 1.0f, 0.2f, 1.0f);
 
     // 1 < 2 < 3 < 4 by distance from boss target-circle center.
+    // Spot 2 is near D/B. Spot 3 sits on the lower outer edge of 1/2.
     private static readonly Vector3[] LeftSpots =
     [
         new(95.0f, 0f, 86.0f),
-        new(96.2f, 0f, 91.4f),
-        new(92.3f, 0f, 91.4f),
-        new(86.5f, 0f, 86.0f),
+        new(96.46f, 0f, 93.10f),
+        new(89.45f, 0f, 94.25f),
+        new(84.80f, 0f, 86.00f),
     ];
 
     private static readonly Vector3[] RightSpots =
     [
         new(105.0f, 0f, 86.0f),
-        new(103.8f, 0f, 91.4f),
-        new(107.7f, 0f, 91.4f),
-        new(113.5f, 0f, 86.0f),
+        MirrorX(LeftSpots[1]),
+        MirrorX(LeftSpots[2]),
+        MirrorX(LeftSpots[3]),
     ];
 
     private readonly object fatalLock = new();
@@ -249,22 +251,14 @@ public class M12SFatalCataclysm
         var roleName = RoleName(partyIndex);
 
         var dp = accessory.Data.GetDefaultDrawProperties();
-        dp.Name = $"致命灾变-个人引导-{roleName}-{SideName(side)}{spotIndex + 1}";
+        dp.Name = $"致命灾变-个人箭头-{roleName}-{SideName(side)}{spotIndex + 1}";
         dp.Scale = new(2.0f);
         dp.Owner = accessory.Data.Me;
         dp.TargetPosition = target;
-        dp.ScaleMode |= ScaleMode.YByDistance;
-        dp.Color = accessory.Data.DefaultSafeColor;
+        dp.ScaleMode = ScaleMode.YByDistance;
+        dp.Color = PersonalArrowColor;
         dp.DestoryAt = 17000;
-        accessory.Method.SendDraw(DrawModeEnum.Imgui, DrawTypeEnum.Displacement, dp);
-
-        dp = accessory.Data.GetDefaultDrawProperties();
-        dp.Name = $"致命灾变-个人站位-{roleName}-{SideName(side)}{spotIndex + 1}";
-        dp.Scale = new(1.2f);
-        dp.Position = target;
-        dp.Color = accessory.Data.DefaultSafeColor;
-        dp.DestoryAt = 17000;
-        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Circle, dp);
+        accessory.Method.SendDraw(DrawModeEnum.Default, DrawTypeEnum.Displacement, dp);
     }
 
     private void ResetFatal()
