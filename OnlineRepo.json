@@ -2,10 +2,10 @@
   {
     "Name": "M12S 致命灾变绘图",
     "Guid": "1e7c0b5f-7b27-4de6-9a3b-6c0d9d8d1c45",
-    "Version": "0.0.0.2",
+    "Version": "0.0.0.3",
     "Author": "Codex",
     "Repo": "https://github.com/lzhailq/misaka",
-    "DownloadUrl": "https://raw.githubusercontent.com/lzhailq/misaka/main/M12S_FatalCataclysm.cs",
+    "DownloadUrl": "https:/2/raw.githubusercontent.com/lzhailq/misaka/main/M12S_FatalCataclysm.cs",
     "Note": "M12S 致命灾变测试版",
     "UpdateInfo": "",
     "TerritoryIds": [1327]
